@@ -237,87 +237,21 @@ class Library {
   }
 }
 
-// ---------------------------
-// Example runnable usage
-// ---------------------------
-async function main() {
-  const storage = new FakeStorage({ initialBooks: [], latencyMs: 150 });
-  const library = new Library(storage);
+// ESM exports for use in React Native and modern bundlers
+export const errors = {
+  LibraryError,
+  ValidationError,
+  DuplicateBookError,
+  BookNotFoundError,
+  BookNotAvailableError,
+};
 
-  console.log('Loading library...');
-  const loadedCount = await library.load();
-  console.log(`Loaded ${loadedCount} book(s).`);
-
-  console.log('\nAdding books...');
-  library.addBook({ title: 'Dune', author: 'Frank Herbert', year: 1965, status: 'available' });
-  library.addBook({ title: 'The Pragmatic Programmer', author: 'Andrew Hunt', year: 1999, status: 'available' });
-  library.addBook({ title: 'Clean Code', author: 'Robert C. Martin', year: 2008, status: 'available' });
-  await library.save();
-  console.log('Books added and saved.');
-
-  console.log('\nBorrowing a book...');
-  try {
-    library.borrowBook('Dune');
-    await library.save();
-    console.log("Borrowed 'Dune'.");
-
-    // Attempt to borrow the same book again to trigger custom error
-    library.borrowBook('Dune');
-  } catch (error) {
-    if (error instanceof LibraryError) {
-      console.log(`Handled library error: ${error.name} - ${error.message}`);
-    } else {
-      console.error('Unexpected error:', error);
-    }
-  }
-
-  console.log('\nSearching for books by author contains "martin"...');
-  const foundByAuthor = library.searchBooks({ author: 'martin' });
-  console.log(foundByAuthor);
-
-  console.log('\nReturning the borrowed book...');
-  try {
-    library.returnBook('Dune');
-    await library.save();
-    console.log("Returned 'Dune'.");
-  } catch (error) {
-    if (error instanceof LibraryError) {
-      console.log(`Handled library error: ${error.name} - ${error.message}`);
-    } else {
-      console.error('Unexpected error:', error);
-    }
-  }
-
-  console.log('\nReports:');
-  console.log('Borrowed books:', library.getBorrowedBooks());
-  console.log('Available books:', library.getAvailableBooks());
-  console.log('Authors:', library.listAuthors());
-  console.log('Summary:', library.generateSummary());
-
-  console.log('\nSimulating reload from storage...');
-  const libraryReloaded = new Library(storage);
-  const countAfterReload = await libraryReloaded.load();
-  console.log(`Reloaded ${countAfterReload} book(s).`);
-  console.log('State after reload (should reflect saved changes):');
-  console.log('Borrowed books:', libraryReloaded.getBorrowedBooks());
-  console.log('Available books:', libraryReloaded.getAvailableBooks());
-}
-
-if (require.main === module) {
-  main().catch((err) => {
-    console.error('Fatal error:', err);
-    process.exit(1);
-  });
-}
-
-module.exports = {
+export {
   Library,
   FakeStorage,
-  errors: {
-    LibraryError,
-    ValidationError,
-    DuplicateBookError,
-    BookNotFoundError,
-    BookNotAvailableError,
-  },
+  LibraryError,
+  ValidationError,
+  DuplicateBookError,
+  BookNotFoundError,
+  BookNotAvailableError,
 };
