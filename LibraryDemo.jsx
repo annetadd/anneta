@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Text, Button, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { Library } from './library';
-import ReactNativeStorage from './reactNativeStorage';
+import { Library } from './library.jsx';
+import ReactNativeStorage from './reactNativeStorage.jsx';
 
 export default function LibraryDemo() {
   const [library] = React.useState(() => new Library(new ReactNativeStorage(AsyncStorage)));
